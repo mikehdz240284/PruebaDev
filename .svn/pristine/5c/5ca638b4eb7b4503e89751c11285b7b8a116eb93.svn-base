@@ -1,0 +1,160 @@
+﻿using Persistence.Config;
+using SilWMS.DataAccess.Config.Manager.BLContract;
+using SilWMS.Framework.BaseManager;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using Modelos.Config;
+using Modelos.Enums;
+
+namespace SilWMS.DataAccess.Config.Manager.BL.Manager
+{
+    public class RolManager : GenericRepository<Rol>, IRolManager
+    {
+        /// <summary>
+        /// Obtiene Roles
+        /// </summary>
+        /// <returns>Lista de Roles</returns>
+        public List<RolModel> ObtenerRoles(EnumRolCveOperacion cveOperacion, int? Id_Rol = null)
+        {
+            var result = new List<RolModel>();
+            ResetParameters();
+            if (cveOperacion == EnumRolCveOperacion.BuscarRoles)
+                AddParameter("S");
+            if (cveOperacion == EnumRolCveOperacion.BuscarActivos)
+                AddParameter("A");
+            if (Id_Rol != null)
+                AddParameter(Id_Rol.Value);
+            var ds = ExecuteWithStoreProcedure("Rol_tUP");
+
+            foreach(DataRow row in ds.Tables[0].Rows)
+            {
+                result.Add(new RolModel
+                {
+                    Id_Rol  = Convert.ToInt32(row["Id_Rol"])
+                    ,Desc_Rol = row["Desc_Rol"].ToString()
+                    ,Estatus = row["Estatus"].ToString()
+                });
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Operaciones en la Entidad Rol
+        /// </summary>
+        /// <param name="cveOperacion">Tipo de Movimiento</param>
+        /// <param name="rolModels">Lista de Roles a procesar</param>
+        public void AdministrarRol(EnumRolCveOperacion cveOperacion, List<RolModel> rolModels)
+        {
+            foreach (var rolModel in rolModels)
+            {
+                ResetParameters();
+                if (cveOperacion == EnumRolCveOperacion.Insert)
+                {
+                    AddParameter("I");
+                    AddParameter();
+                    AddParameter(rolModel.Desc_Rol);
+                    AddParameter();
+                    AddParameter(rolModel.UserId);
+                }
+                if (cveOperacion == EnumRolCveOperacion.Update)
+                {
+                    AddParameter("U");
+                    AddParameter(rolModel.Id_Rol);
+                    AddParameter(rolModel.Desc_Rol);
+                    AddParameter();
+                    AddParameter(rolModel.UserId);
+                }
+                if (cveOperacion == EnumRolCveOperacion.Delete)
+                {
+                    AddParameter("D");
+                    AddParameter(rolModel.Id_Rol);
+                }
+                if (cveOperacion == EnumRolCveOperacion.ReActivar)
+                {
+                    AddParameter("R");
+                    AddParameter(rolModel.Id_Rol);
+                }
+                ExecuteWithStoreProcedure("Rol_tUP");
+            }
+        }
+
+        /// <summary>
+        /// Obtener Permisos configurados de los rolos de Usuarios
+        /// </summary>
+        /// <param name="Id_Rol">Lista de permisos</param>
+        /// <returns></returns>
+        public List<OpcionModel> ObtenerPermisos(int? Id_Rol)
+        {
+            var list = new List<OpcionModel>();
+            ResetParameters();
+            AddParameter("P");
+            if (Id_Rol != null)
+                AddParameter(Id_Rol.Value);
+            var ds = ExecuteWithStoreProcedure("Rol_tUP");
+
+            foreach (DataRow row in ds.Tables[0].Rows)
+            {
+                list.Add(new OpcionModel
+                {
+                    Id_Modulo = (int)row["Id_Modulo"],
+                    Abrev_Modulo = (string)row["Abrev_Modulo"],
+                    ModuloActivo = (bool)row["ModuloActivo"],
+
+                    Id_Menu = (int)row["Id_Menu"],
+                    Abrev_Menu = (string)row["Abrev_Menu"],
+                    MenuActivo = (bool)row["MenuActivo"],
+
+                    Id_Opcion = (int)row["Id_Opcion"],
+                    Abrev_Opcion = (string)row["Abrev_Opcion"],
+                    OpcionActiva = (bool)row["OpcionActiva"],
+                    Path_Opcion = (string)row["Path_Opcion"],
+                    Forma = (string)row["Forma"]
+                });
+            }
+
+            return list;
+        }
+
+        /// <summary>
+        /// Guardar permisos configurados del rol de usuario
+        /// </summary>
+        /// <param name="Id_Rol">Identificador del Rol</param>
+        /// <param name="xmlOpciones">Configuracion de las Opciones</param>
+        /// <param name="UserId">Identificador del Usuario</param>
+        public void GuardarPermisos(int Id_Rol, string xmlOpciones, int UserId)
+        {
+            ResetParameters();
+            AddParameter("Q");
+            AddParameter(Id_Rol);
+            AddParameter();
+            AddParameter(xmlOpciones);
+            AddParameter(UserId);
+            ExecuteWithStoreProcedure("Rol_tUP");
+        }
+
+        /// <summary>
+        /// Insert masivos
+        /// </summary>
+        /// <param name="rolModels"></param>
+        public void BulkInsert(List<RolModel> rolModels)
+        {
+            var list = new List<Rol>();
+
+            foreach(var model in rolModels)
+            {
+                list.Add(new Rol
+                {
+                    Id = model.Id_Rol,
+                    Descripcion = model.Desc_Rol,
+                    UserId = model.UserId,
+                    Activo = true,
+                    FecMovto = DateTime.Now
+                });
+            }
+
+            BulkInsert(list);
+        }
+    }
+}

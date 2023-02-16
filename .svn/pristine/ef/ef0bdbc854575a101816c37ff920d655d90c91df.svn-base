@@ -1,0 +1,45 @@
+﻿using SilWMS.Framework.IBaseManager;
+using Persistence.Config;
+using Modelos.Config;
+using System.Collections.Generic;
+using Modelos.Enums;
+
+namespace SilWMS.DataAccess.Config.Manager.BLContract
+{
+    public interface IRolManager : IRepository<Rol>
+    {
+        /// <summary>
+        /// Obtiene todos los Roles
+        /// </summary>
+        /// <returns>Lista de Roles</returns>
+        List<RolModel> ObtenerRoles(EnumRolCveOperacion cveOperacion, int? Id_Rol = null);
+
+        /// <summary>
+        /// Operaciones en la Entidad Rol
+        /// </summary>
+        /// <param name="cveOperacion">Tipo de Movimiento</param>
+        /// <param name="rolModels">Lista de Roles a procesar</param>
+        void AdministrarRol(EnumRolCveOperacion cveOperacion, List<RolModel> rolModels);
+
+        /// <summary>
+        /// Obtener Permisos configurados de los rolos de Usuarios
+        /// </summary>
+        /// <param name="Id_Rol">Lista de permisos</param>
+        /// <returns></returns>
+        List<OpcionModel> ObtenerPermisos(int? Id_Rol);
+
+        /// <summary>
+        /// Guardar permisos configurados del rol de usuario
+        /// </summary>
+        /// <param name="Id_Rol">Identificador del Rol</param>
+        /// <param name="xmlOpciones">Configuracion de las Opciones</param>
+        /// <param name="UserId">Identificador del Usuario</param>
+        void GuardarPermisos(int Id_Rol, string xmlOpciones, int UserId);
+
+        /// <summary>
+        /// Insert masivos
+        /// </summary>
+        /// <param name="rolModels"></param>
+        void BulkInsert(List<RolModel> rolModels);
+    }
+}

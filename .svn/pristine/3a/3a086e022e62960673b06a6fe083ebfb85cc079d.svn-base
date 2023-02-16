@@ -1,0 +1,55 @@
+﻿using Persistence.Config;
+using SilWMS.DataAccess.Config.Manager.BLContract;
+using SilWMS.Framework.BaseManager;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using Modelos.Config;
+
+namespace SilWMS.DataAccess.Config.Manager.BL.Manager
+{
+    public class RolManager : GenericRepository<Rol>, IRolManager
+    {
+        
+
+        /// <summary>
+        /// Guardar permisos configurados del rol de usuario
+        /// </summary>
+        /// <param name="Id_Rol">Identificador del Rol</param>
+        /// <param name="xmlOpciones">Configuracion de las Opciones</param>
+        /// <param name="UserId">Identificador del Usuario</param>
+        public void GuardarPermisos(int Id_Rol, string xmlOpciones, int UserId)
+        {
+            ResetParameters();
+            AddParameter("Q");
+            AddParameter(Id_Rol);
+            AddParameter();
+            AddParameter(xmlOpciones);
+            AddParameter(UserId);
+            ExecuteWithStoreProcedure("Rol_tUP");
+        }
+
+        /// <summary>
+        /// Insert masivos
+        /// </summary>
+        /// <param name="rolModels"></param>
+        public void BulkInsert(List<RolModel> rolModels)
+        {
+            //var list = new List<Rol>();
+
+            //foreach(var model in rolModels)
+            //{
+            //    list.Add(new Rol
+            //    {
+            //        Id = model.Id_Rol,
+            //        Descripcion = model.Desc_Rol,
+            //        UserId = model.UserId,
+            //        Activo = true,
+            //        FecMovto = DateTime.Now
+            //    });
+            //}
+
+            //BulkInsert(list);
+        }
+    }
+}

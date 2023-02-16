@@ -1,0 +1,17 @@
+﻿using SilWMS.Framework.EntityBase;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Persistence.Config
+{
+    public class Empleado : Entity<int>
+    {
+        public string Nombre { get; set; }
+        public string NumeroEmpleado { get; set; }
+        public int Id_Num_Rol { get; set; }
+        public string NombreRol { get; set; }
+    }
+}
