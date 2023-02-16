@@ -1,4 +1,7 @@
-use PruebaDev
+--CREATE DATABASE PruebaDev
+--GO
+
+USE PruebaDev
 go
 
  
@@ -123,7 +126,7 @@ SELECT * FROM Empleado
 ----exec Empleados 'I',null,'Miguel Hernandez','123456787',3
 ----exec Empleados 'D',7
 ----exec Empleados 'U',8,'Miguel Hernandez Gonzalez','123456789',2
-exec Empleados 'S',3
+--exec Empleados 'S',3
 
 --exec Movimientos 'I',1,2,10,28
 --exec Movimientos 'I',2,2,10,28
@@ -133,6 +136,6 @@ exec Empleados 'S',3
 ----exec Movimientos 'D',8,1
 --exec Movimientos 'S',1
 
-exec CalculoSueldoMensualEmpleado
+--exec CalculoSueldoMensualEmpleado
 
 
