@@ -32,7 +32,7 @@ namespace Test_DataAccess
         public void GetRoles()
         {
             var manager = IoCFactoryDataAccess.Instance.ChildDataAccessContainer.Resolve<IRolBLManager>();
-
+            //
             var result = manager.ObtieneLista();
         }
 
